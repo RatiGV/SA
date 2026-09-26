@@ -6,6 +6,9 @@
 <title>კურსი - Smart Academy</title>
 <meta name="description" content="Smart Academy - კურსის დეტალური აღწერა, სილაბუსი, ლექტორი და რეგისტრაცია.">
 <meta name="theme-color" content="#1B1E24">
+<meta name="color-scheme" content="light dark">
+<script>try{var t=localStorage.getItem("sa_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+
 <link rel="icon" href="assets/img/logo-bl.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,38 +23,34 @@
 <script src="assets/js/app.js"></script>
 <script>
 document.addEventListener("sa:ready",function(){
-  var SA=window.SA,I=SA.icon,id=+new URLSearchParams(location.search).get("id")||1;
-  var c=SA.courses.filter(function(x){return x.id===id})[0]||SA.courses[0],cat=SA.cat(c.cat),e=SA.esc;
+  var SA=window.SA,I=SA.icon,e=SA.esc,id=+new URLSearchParams(location.search).get("id");
+  var c=SA.course(id)||SA.courses[0],cat=SA.cat(c.cat),lects=c.lect.map(SA.lect).filter(Boolean);
   document.title=c.ka+" - Smart Academy";
-  var fav=SA.favs().indexOf(c.id)>-1,old=Math.round(c.price*1.2/10)*10;
-  var modules=[
-    ["შესავალი და საფუძვლები",["დარგის მიმოხილვა და ინსტრუმენტები","სამუშაო გარემოს მომზადება","პირველი პრაქტიკული დავალება"]],
-    ["ძირითადი ინსტრუმენტები",["ძირითადი მეთოდები და პრინციპები","ინდუსტრიული სტანდარტები","ქეისების ანალიზი"]],
-    ["პრაქტიკული პროექტი I",["ამოცანის დასმა და დაგეგმვა","შესრულება ლექტორის მენტორობით","უკუკავშირი და გაუმჯობესება"]],
-    ["მოწინავე თემები",["ოპტიმიზაცია და best practices","გუნდური მუშაობა და პროცესები","AI ინსტრუმენტები პროფესიაში"]],
-    ["ფინალური პროექტი და კარიერა",["საპორტფოლიო პროექტის დასრულება","პრეზენტაცია და შეფასება","CV, LinkedIn და გასაუბრების მომზადება"]]
-  ];
-  var learn=["დარგის ძირითადი ინსტრუმენტები და მეთოდოლოგია","რეალურ ამოცანებზე დაფუძნებული პრაქტიკა","საპორტფოლიო პროექტი ლექტორის მენტორობით","გუნდში მუშაობისა და პრეზენტაციის უნარები","ინდუსტრიის სტანდარტები და best practices","კარიერული კონსულტაცია და დასაქმების მხარდაჭერა"];
-  var related=SA.courses.filter(function(x){return x.cat===c.cat&&x.id!==c.id}).slice(0,3);
+  var fav=SA.favs().indexOf(c.id)>-1;
+  var related=SA.courses.filter(function(x){return x.cat===c.cat&&x.id!==c.id}).sort(function(a,b){return a.sort-b.sort}).slice(0,3);
+  var days=c.days.length?c.days:["განრიგი დაზუსტდება"];
+  function dayCell(d){var m=d.match(/^(\S+)\s+(.+)$/);return '<div><small>'+e(m?m[1]:"")+'</small><b>'+e(m?m[2]:d)+'</b></div>'}
   document.getElementById("course").innerHTML=
   '<section class="cd-hero"><div class="container cd-grid"><div>'+
     '<nav class="crumbs" aria-label="breadcrumb"><a href="index.html">მთავარი</a>'+I("right")+'<a href="courses.html">კურსები</a>'+I("right")+'<a href="courses.html?cat='+c.cat+'">'+e(cat.name)+'</a></nav>'+
-    '<div style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap"><span class="chip" style="background:'+cat.color+';color:#fff">'+e(cat.name)+'</span><span class="chip chip-dark" style="background:rgba(255,255,255,.1)">'+(c.format==="online"?"ონლაინ":"ფიზიკური")+'</span>'+(c.hot?'<span class="chip chip-lime">🔥 პოპულარული</span>':"")+'</div>'+
-    '<h1>'+e(c.ka)+'</h1><p class="en">'+e(c.en)+'</p>'+
-    '<div class="cd-facts"><div><small>დაწყება</small><b>'+c.start+'</b></div><div><small>ხანგრძლივობა</small><b>'+c.weeks+' კვირა</b></div><div><small>დონე</small><b>'+c.level+'</b></div><div><small>ლექტორი</small><b>'+e(c.lect.join(", "))+'</b></div></div>'+
-  '</div><aside class="buy"><div class="cover">'+SA.cover(c)+'</div><div class="buy-body">'+
-    '<div class="buy-price"><b>'+c.price+' ₾</b><s>'+old+' ₾</s><span class="chip">-'+Math.round((1-c.price/old)*100)+'%</span></div>'+
-    '<small style="color:var(--muted)">ან '+Math.ceil(c.price/6)+' ₾ / თვე - 6 თვიანი განვადებით</small>'+
+    '<div style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap"><span class="chip" style="background:'+cat.color+';color:#fff">'+e(cat.name)+'</span><span class="chip chip-dark" style="background:rgba(255,255,255,.1)">'+SA.fmt(c)+'</span>'+(c.rating?'<span class="chip chip-lime">★ '+c.rating.toFixed(1)+' · '+c.reviewsCount+' შეფასება</span>':"")+'</div>'+
+    '<h1>'+e(c.ka)+'</h1>'+(c.sub?'<p class="subt">'+e(c.sub)+'</p>':"")+(c.en?'<p class="en">'+e(c.en)+'</p>':"")+
+    '<div class="cd-facts"><div><small>დაწყება</small><b>'+(c.date||"მალე")+'</b></div><div><small>ხანგრძლივობა</small><b>'+SA.duration(c)+'</b></div><div><small>შეხვედრები</small><b>'+c.meetings+'</b></div><div><small>საათები</small><b>'+e(c.hours)+'</b></div></div>'+
+    '<div class="cd-lects">'+lects.map(function(l){return '<a href="#lecturer">'+SA.av(l)+e(l.name)+'</a>'}).join("")+'</div>'+
+  '</div><aside class="buy"><div class="cover"><img src="'+c.img+'" alt="'+e(c.ka)+'" width="880" height="462"></div><div class="buy-body">'+
+    '<div class="buy-price"><b>'+c.price+' ₾</b></div>'+
+    '<small style="color:var(--muted)">ან '+Math.ceil(c.price/6)+' ₾ / თვე - განვადებით</small>'+
     '<a class="btn btn-primary" href="#register">დარეგისტრირდი '+I("arrow")+'</a>'+
     '<button class="btn btn-ghost'+(fav?" on":"")+'" data-fav="'+c.id+'" type="button">'+I("heart")+' სასურველებში</button>'+
-    '<ul><li>'+I("check")+'საპორტფოლიო პროექტი</li><li>'+I("check")+'Smart Academy-ის სერტიფიკატი</li><li>'+I("check")+'ლექციების ჩანაწერები</li><li>'+I("check")+'კარიერის პროგრამა უფასოდ</li></ul>'+
+    '<ul><li>'+I("check")+SA.fmt(c)+'</li><li>'+I("check")+c.meetings+' შეხვედრა · '+e(c.hours)+'</li><li>'+I("check")+'Smart Academy-ის სერტიფიკატი</li><li>'+I("check")+'კარიერის განვითარების პროგრამა</li></ul>'+
   '</div></aside></div></section>'+
   '<div class="container cd-body"><div>'+
-    '<section class="reveal"><h2>რას ისწავლი</h2><div class="learn">'+learn.map(function(l){return "<div>"+I("check")+"<span>"+l+"</span></div>"}).join("")+'</div></section>'+
-    '<section class="reveal"><h2>სილაბუსი</h2><div class="acc">'+modules.map(function(m,i){return '<details'+(i===0?" open":"")+'><summary><span>'+(i+1)+'. '+m[0]+'</span><small>'+m[1].length+' თემა</small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary><div class="acc-body"><ul>'+m[1].map(function(t){return "<li>"+t+"</li>"}).join("")+'</ul></div></details>'}).join("")+'</div></section>'+
-    '<section class="reveal"><h2>ლექტორი</h2>'+c.lect.map(function(l){return '<div class="teacher" style="margin-bottom:12px"><span class="av" style="background:linear-gradient(135deg,'+cat.color+',#1B1E24)">'+SA.initials(l)+'</span><div><b>'+e(l)+'</b><p>დარგის პრაქტიკოსი მრავალწლიანი გამოცდილებით. ასწავლის Smart Academy-ში და აქტიურად მუშაობს წამყვან ქართულ და საერთაშორისო კომპანიებთან.</p></div></div>'}).join("")+'</section>'+
-    '<section class="reveal" id="register"><h2>განრიგი</h2><div class="schedule"><div><small>დაწყების თარიღი</small><b>'+c.start+'</b></div><div><small>დღეები</small><b>ორშ / ოთხ</b></div><div><small>დრო</small><b>19:00 - 21:00</b></div></div>'+
+    (c.desc?'<section class="reveal"><h2>კურსის შესახებ</h2><p class="lead-text">'+e(c.desc)+'</p></section>':"")+
+    (c.learn.length?'<section class="reveal"><h2>რას ისწავლი</h2><div class="learn">'+c.learn.map(function(l){return "<div>"+I("check")+"<span>"+e(l)+"</span></div>"}).join("")+'</div>'+(c.syllabus?'<a class="btn btn-ghost" style="margin-top:16px" href="'+c.syllabus+'" target="_blank" rel="noopener">'+I("pdf")+' სილაბუსის ჩამოტვირთვა</a>':"")+'</section>':"")+
+    '<section class="reveal" id="lecturer"><h2>'+(lects.length>1?"ლექტორები":"ლექტორი")+'</h2>'+lects.map(function(l){return '<div class="teacher"><div class="ph">'+(l.photo?'<img src="'+l.photo+'" alt="'+e(l.name)+'" loading="lazy">':"")+'</div><div><b>'+e(l.name)+'</b>'+(l.pos?'<div class="pos">'+e(l.pos)+'</div>':"")+(l.bio.length?'<ul>'+l.bio.map(function(x){return "<li>"+e(x)+"</li>"}).join("")+'</ul>':"")+'<a class="more" href="'+l.url+'" target="_blank" rel="noopener">პროფილის ნახვა →</a></div></div>'}).join("")+'</section>'+
+    '<section class="reveal" id="register"><h2>განრიგი</h2><div class="schedule"><div><small>დაწყების თარიღი</small><b>'+(c.date||"მალე")+'</b></div>'+days.slice(0,2).map(dayCell).join("")+'</div>'+
     '<div class="cta" style="margin-top:24px;padding:32px;border-radius:28px"><div><h2 style="font-size:26px">დაიკავე ადგილი ნაკადში</h2><p>ადგილების რაოდენობა შეზღუდულია</p></div><form id="reg-form"><label class="sr-only" for="rp">ტელეფონი</label><input id="rp" type="tel" placeholder="5XX XX XX XX" required pattern="[0-9 +]{9,16}"><button class="btn btn-dark" type="submit">რეგისტრაცია</button></form></div></section>'+
+    (c.reviews.length?'<section class="reveal"><h2>სტუდენტების შეფასებები</h2><div class="rev-sum"><b>'+c.rating.toFixed(1)+'</b>'+SA.stars(5)+'<small>'+c.reviewsCount+' შეფასება</small></div><div class="reviews">'+c.reviews.map(function(r){return '<figure class="review" style="margin:0">'+SA.stars(r.rating)+'<p>'+e(r.quote)+'</p><figcaption class="who">'+(r.img?'<span class="av plain"><img src="'+r.img+'" alt="" loading="lazy"></span>':"")+'<b>'+e(r.name)+'</b></figcaption></figure>'}).join("")+'</div></section>':"")+
   '</div><div></div></div>'+
   (related.length?'<section class="section section-soft" style="margin-top:24px"><div class="container"><div class="section-head"><div><span class="kicker">მსგავსი კურსები</span><h2>შეიძლება დაგაინტერესოს</h2></div></div><div class="courses">'+related.map(SA.card).join("")+'</div></div></section>':"");
   document.getElementById("reg-form").addEventListener("submit",function(ev){ev.preventDefault();this.reset();SA.toast("რეგისტრაცია მიღებულია! მალე დაგიკავშირდებით")});

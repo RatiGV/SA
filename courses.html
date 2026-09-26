@@ -6,6 +6,9 @@
 <title>ყველა კურსი - Smart Academy</title>
 <meta name="description" content="Smart Academy-ის ყველა ფიზიკური და ონლაინ კურსი ერთ სივრცეში - გაფილტრე მიმართულების, ფორმატისა და დონის მიხედვით.">
 <meta name="theme-color" content="#1B1E24">
+<meta name="color-scheme" content="light dark">
+<script>try{var t=localStorage.getItem("sa_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+
 <link rel="icon" href="assets/img/logo-bl.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +22,7 @@
     <div class="container">
       <nav class="crumbs" aria-label="breadcrumb"><a href="index.html">მთავარი</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg><span id="crumb-current">ყველა კურსი</span></nav>
       <h1 id="page-title">ყველა კურსი</h1>
-      <p>იპოვე შენთვის სასურველი კურსი - გაფილტრე მიმართულების, ფორმატისა და დონის მიხედვით.</p>
+      <p>იპოვე შენთვის სასურველი კურსი - გაფილტრე მიმართულების, ფორმატის, ხანგრძლივობისა და ფასის მიხედვით.</p>
     </div>
   </section>
   <section style="padding-bottom:40px">
@@ -29,8 +32,8 @@
         <div id="f-cat" style="margin-top:8px"></div>
         <h6>ფორმატი</h6>
         <div id="f-format"></div>
-        <h6>დონე</h6>
-        <div id="f-level"></div>
+        <h6>ხანგრძლივობა</h6>
+        <div id="f-dur"></div>
         <h6>ფასი</h6>
         <div id="f-price"></div>
         <button class="btn btn-ghost" type="button" id="reset" style="width:100%;margin-top:22px">ფილტრების გასუფთავება</button>
@@ -41,7 +44,7 @@
           <div style="display:flex;gap:10px;align-items:center">
             <span class="result-count" id="count"></span>
             <button class="btn btn-ghost btn-sm filters-toggle" type="button" id="open-filters">ფილტრები</button>
-            <select class="lang" id="sort" aria-label="დალაგება" style="font-weight:500"><option value="soon">უახლოესი ნაკადი</option><option value="price-asc">ფასი: ზრდადობით</option><option value="price-desc">ფასი: კლებადობით</option><option value="short">ხანგრძლივობა</option></select>
+            <select class="lang" id="sort" aria-label="დალაგება" style="font-weight:500"><option value="soon">უახლოესი ნაკადი</option><option value="price-asc">ფასი: ზრდადობით</option><option value="price-desc">ფასი: კლებადობით</option><option value="short">ხანგრძლივობა</option><option value="rating">შეფასება</option></select>
           </div>
         </div>
         <div class="courses" id="list"></div>
@@ -63,31 +66,33 @@
 <script>
 document.addEventListener("sa:ready",function(){
   var SA=window.SA,p=new URLSearchParams(location.search);
-  var st={cats:p.get("cat")?[p.get("cat")]:[],formats:p.get("format")?[p.get("format")]:[],levels:[],price:"",q:p.get("q")||"",fav:p.get("fav")==="1",sort:"soon"};
-  var months={"ოქტ":10,"ნოე":11,"დეკ":12};
-  function dateKey(c){var s=c.start.split(" ");return (months[s[1]]||0)*100+(+s[0])}
+  var st={cats:p.get("cat")?[p.get("cat")]:[],formats:p.get("format")?[p.get("format")]:[],dur:"",price:"",q:p.get("q")||"",fav:p.get("fav")==="1",sort:"soon"};
   function box(group,val,label,count,checked){return '<div class="check"><label><input type="checkbox" data-g="'+group+'" value="'+val+'"'+(checked?" checked":"")+'>'+label+'</label><span class="count">'+count+'</span></div>'}
   function cnt(fn){return SA.courses.filter(fn).length}
+  function inRange(v,r){var a=r.split("-");return v>=+a[0]&&v<+a[1]}
+  function months(c){return c.months||c.meetings/8}
   document.getElementById("f-cat").innerHTML=SA.categories.map(function(c){return box("cats",c.id,c.name,cnt(function(x){return x.cat===c.id}),st.cats.indexOf(c.id)>-1)}).join("");
-  document.getElementById("f-format").innerHTML=[["offline","ფიზიკური"],["online","ონლაინ"]].map(function(f){return box("formats",f[0],f[1],cnt(function(x){return x.format===f[0]}),st.formats.indexOf(f[0])>-1)}).join("");
-  document.getElementById("f-level").innerHTML=["დამწყები","საშუალო","გამოცდილი","ყველასთვის"].map(function(l){return box("levels",l,l,cnt(function(x){return x.level===l}),false)}).join("");
-  var prices=[["0-700","700 ₾-მდე"],["700-1000","700 - 1000 ₾"],["1000-99999","1000 ₾-ზე მეტი"]];
-  document.getElementById("f-price").innerHTML=prices.map(function(r){var a=r[0].split("-");return box("price",r[0],r[1],cnt(function(x){return x.price>=+a[0]&&x.price<+a[1]}),false)}).join("");
+  document.getElementById("f-format").innerHTML=[["online","ონლაინ"],["hybrid","ფიზიკური + ონლაინ"]].map(function(f){return box("formats",f[0],f[1],cnt(function(x){return x.format===f[0]}),st.formats.indexOf(f[0])>-1)}).join("");
+  var durs=[["0-1.6","1.5 თვემდე"],["1.6-3.1","2 - 3 თვე"],["3.1-99","3 თვეზე მეტი"]];
+  document.getElementById("f-dur").innerHTML=durs.map(function(r){return box("dur",r[0],r[1],cnt(function(x){return inRange(months(x),r[0])}),false)}).join("");
+  var prices=[["0-1000","1000 ₾-მდე"],["1000-1600","1000 - 1600 ₾"],["1600-99999","1600 ₾-ზე მეტი"]];
+  document.getElementById("f-price").innerHTML=prices.map(function(r){return box("price",r[0],r[1],cnt(function(x){return inRange(x.price,r[0])}),false)}).join("");
   document.getElementById("cq").value=st.q;
   if(st.fav){document.getElementById("page-title").textContent="სასურველი კურსები";document.getElementById("crumb-current").textContent="სასურველი კურსები"}
   else if(st.cats.length===1){document.getElementById("page-title").textContent=SA.cat(st.cats[0]).name}
+  function hay(c){return (c.ka+" "+c.sub+" "+c.en+" "+c.lect.map(function(id){var l=SA.lect(id);return l?l.name:""}).join(" ")+" "+SA.cat(c.cat).name).toLowerCase()}
   function render(){
     var q=st.q.trim().toLowerCase(),favs=SA.favs();
     var list=SA.courses.filter(function(c){
       if(st.fav&&favs.indexOf(c.id)<0)return false;
       if(st.cats.length&&st.cats.indexOf(c.cat)<0)return false;
       if(st.formats.length&&st.formats.indexOf(c.format)<0)return false;
-      if(st.levels.length&&st.levels.indexOf(c.level)<0)return false;
-      if(st.price){var a=st.price.split("-");if(c.price<+a[0]||c.price>=+a[1])return false}
-      if(q&&(c.ka+" "+c.en+" "+c.lect.join(" ")+" "+SA.cat(c.cat).name).toLowerCase().indexOf(q)<0)return false;
+      if(st.dur&&!inRange(months(c),st.dur))return false;
+      if(st.price&&!inRange(c.price,st.price))return false;
+      if(q&&hay(c).indexOf(q)<0)return false;
       return true;
     });
-    list.sort(function(a,b){if(st.sort==="price-asc")return a.price-b.price;if(st.sort==="price-desc")return b.price-a.price;if(st.sort==="short")return a.weeks-b.weeks;return dateKey(a)-dateKey(b)});
+    list.sort(function(a,b){if(st.sort==="price-asc")return a.price-b.price;if(st.sort==="price-desc")return b.price-a.price;if(st.sort==="short")return months(a)-months(b);if(st.sort==="rating")return b.rating-a.rating||b.reviewsCount-a.reviewsCount;return a.sort-b.sort});
     var el=document.getElementById("list");
     el.innerHTML=list.length?list.map(SA.card).join(""):'<div class="empty">'+(st.fav?"სასურველებში ჯერ კურსი არ გაქვს დამატებული.":"ამ ფილტრებით კურსი ვერ მოიძებნა. სცადე სხვა კომბინაცია.")+'</div>';
     document.getElementById("count").textContent=list.length+" კურსი";
@@ -95,13 +100,13 @@ document.addEventListener("sa:ready",function(){
   }
   document.getElementById("filters").addEventListener("change",function(e){
     var i=e.target;if(!i.matches("input[data-g]"))return;var g=i.getAttribute("data-g");
-    if(g==="price"){this.querySelectorAll('[data-g="price"]').forEach(function(x){if(x!==i)x.checked=false});st.price=i.checked?i.value:"";}
+    if(g==="price"||g==="dur"){this.querySelectorAll('[data-g="'+g+'"]').forEach(function(x){if(x!==i)x.checked=false});st[g]=i.checked?i.value:"";}
     else{st[g]=Array.prototype.map.call(this.querySelectorAll('[data-g="'+g+'"]:checked'),function(x){return x.value})}
     render();
   });
   var t;document.getElementById("cq").addEventListener("input",function(){var v=this.value;clearTimeout(t);t=setTimeout(function(){st.q=v;render()},150)});
   document.getElementById("sort").addEventListener("change",function(){st.sort=this.value;render()});
-  document.getElementById("reset").addEventListener("click",function(){document.querySelectorAll("#filters input").forEach(function(x){x.checked=false});st.cats=[];st.formats=[];st.levels=[];st.price="";st.q="";document.getElementById("cq").value="";render()});
+  document.getElementById("reset").addEventListener("click",function(){document.querySelectorAll("#filters input").forEach(function(x){x.checked=false});st.cats=[];st.formats=[];st.dur="";st.price="";st.q="";document.getElementById("cq").value="";render()});
   var fl=document.getElementById("filters");
   document.getElementById("open-filters").addEventListener("click",function(){fl.classList.add("open")});
   document.querySelector("[data-close-filters]").addEventListener("click",function(){fl.classList.remove("open")});
