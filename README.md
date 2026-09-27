@@ -46,4 +46,5 @@ Then open http://localhost:8000.
 - `SA.card()` maps to a `components/course-card.blade.php` component, fed from the courses table instead of `data.js`
 - Image paths mirror the live site's IDs, so in Blade they can point back to `/upload/trainings/...` and `/upload/trainers/crop/...`
 - Events, blog posts, partner names, the job list and the B2B figures are still placeholder content
+- Courses carry a `cats` list (all category tags from the live site). The HR and Personal Development categories do not exist on the live site; their course assignments (`HR`, `PD` id lists) were chosen by hand
 - Lead and registration forms currently show a toast; point them to a POST route with `@csrf`

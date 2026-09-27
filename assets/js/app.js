@@ -24,6 +24,8 @@
     chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/></svg>',
     mega:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 15-6v14L3 13v-2Z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
     brief:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
+    users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>',
+    sprout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"/><path d="M12 12C12 8 9 5 4 5c0 4 3 7 8 7Z"/><path d="M12 14c0-3.5 2.5-6 7-6 0 3.5-2.5 6-7 6Z"/></svg>',
     fb:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8a0 0 0 0 1 0 0Z"/></svg>',
     ig:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>',
     li:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9h4v12H4zM6 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM10 9h4v1.7c.6-1 2-2 4-2 3.3 0 4 2.1 4 5V21h-4v-6c0-1.4 0-3-2-3s-2 1.5-2 3v6h-4z"/></svg>',
@@ -39,6 +41,7 @@
   SA.esc = function(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
   SA.course = function(id){for(var i=0;i<SA.courses.length;i++){if(SA.courses[i].id===id)return SA.courses[i]}return null};
   SA.lect = function(id){for(var i=0;i<SA.lecturers.length;i++){if(SA.lecturers[i].id===id)return SA.lecturers[i]}return null};
+  SA.inCat = function(c,id){return (c.cats||[c.cat]).indexOf(id)>-1};
   SA.fmt = function(c){return c.format==="online"?"ონლაინ":"ფიზიკური + ონლაინ"};
   SA.duration = function(c){return c.months>0?c.months+" თვე":c.meetings+" შეხვედრა"};
   SA.av = function(l,cls){if(!l)return "";return '<span class="av'+(cls?" "+cls:"")+'">'+(l.photo?'<img src="'+l.photo+'" alt="'+SA.esc(l.name)+'" loading="lazy">':SA.initials(l.name))+'</span>'};

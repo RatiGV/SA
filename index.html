@@ -220,14 +220,14 @@ document.addEventListener("sa:ready",function(){
     '<div class="hv-card c3"><div class="hv-row">'+SA.av(dk).replace('class="av"','class="av" style="width:52px;height:52px"')+'<div><b>'+e(dk.name)+'</b><small>'+e(dk.pos)+'</small><small style="color:var(--brand-text);font-weight:600">'+e(ux.ka)+'</small></div></div></div>'+
     '<div class="hv-card c4"><div class="hv-row">'+SA.stars(5)+'<b>'+avg+'</b><small>'+revTotal+' შეფასება</small></div></div>';
   document.getElementById("stats").innerHTML=[[SA.courses.length,"","აქტიური კურსი"],[SA.lecturers.length,"","ლექტორი-პრაქტიკოსი"],[avg,"/5","საშუალო შეფასება"],[revTotal,"+","სტუდენტის შეფასება"]].map(function(x){return '<div class="stat"><div class="num">'+x[0]+'<em>'+x[1]+'</em></div><p>'+x[2]+'</p></div>'}).join("");
-  document.getElementById("cats").innerHTML=SA.categories.map(function(c){var n=SA.courses.filter(function(x){return x.cat===c.id}).length;return '<a class="cat reveal" href="courses.html?cat='+c.id+'"><span class="ic ic-tint" style="--c:'+c.color+'">'+I(c.icon)+'</span><span class="arrow">'+I("arrow")+'</span><span><b>'+c.name+'</b><small>'+n+' კურსი</small></span></a>'}).join("");
+  document.getElementById("cats").innerHTML=SA.categories.map(function(c,i){var n=SA.courses.filter(function(x){return SA.inCat(x,c.id)}).length;return '<a class="cat reveal" href="courses.html?cat='+c.id+'" style="--c:'+c.color+'"><span class="cat-head"><span class="ic ic-tint">'+I(c.icon)+'</span><span class="num">'+(i<9?"0":"")+(i+1)+'</span></span><span class="cat-body"><b>'+e(c.name)+'</b><span class="desc">'+e(c.sub)+'</span><strong class="cnt">'+n+' კურსი</strong></span></a>'}).join("");
   var partners=["TBC Bank","Bank of Georgia","EPAM","Wissol","Magti","Silknet","Liberty","PSP","GPC","Aversi","Nikora","Crystal"];
   document.getElementById("marquee").innerHTML=partners.concat(partners).map(function(p){return "<span>"+p+"</span>"}).join("");
   var state={cat:"",format:""};
   var tabs=[{id:"",name:"ყველა"}].concat(SA.categories);
   document.getElementById("home-tabs").innerHTML=tabs.map(function(t,i){return '<button class="tab'+(i?"":" active")+'" data-cat="'+t.id+'">'+t.name+'</button>'}).join("");
   function render(){
-    var list=SA.courses.filter(function(c){return (!state.cat||c.cat===state.cat)&&(!state.format||c.format===state.format)}).sort(function(a,b){return a.sort-b.sort});
+    var list=SA.courses.filter(function(c){return (!state.cat||SA.inCat(c,state.cat))&&(!state.format||c.format===state.format)}).sort(function(a,b){return a.sort-b.sort});
     var el=document.getElementById("home-courses");
     el.innerHTML=list.length?list.slice(0,6).map(SA.card).join(""):'<div class="empty">ამ ფილტრით კურსი ვერ მოიძებნა</div>';
     SA.observe(el);

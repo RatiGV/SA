@@ -71,7 +71,7 @@ document.addEventListener("sa:ready",function(){
   function cnt(fn){return SA.courses.filter(fn).length}
   function inRange(v,r){var a=r.split("-");return v>=+a[0]&&v<+a[1]}
   function months(c){return c.months||c.meetings/8}
-  document.getElementById("f-cat").innerHTML=SA.categories.map(function(c){return box("cats",c.id,c.name,cnt(function(x){return x.cat===c.id}),st.cats.indexOf(c.id)>-1)}).join("");
+  document.getElementById("f-cat").innerHTML=SA.categories.map(function(c){return box("cats",c.id,c.name,cnt(function(x){return SA.inCat(x,c.id)}),st.cats.indexOf(c.id)>-1)}).join("");
   document.getElementById("f-format").innerHTML=[["online","ონლაინ"],["hybrid","ფიზიკური + ონლაინ"]].map(function(f){return box("formats",f[0],f[1],cnt(function(x){return x.format===f[0]}),st.formats.indexOf(f[0])>-1)}).join("");
   var durs=[["0-1.6","1.5 თვემდე"],["1.6-3.1","2 - 3 თვე"],["3.1-99","3 თვეზე მეტი"]];
   document.getElementById("f-dur").innerHTML=durs.map(function(r){return box("dur",r[0],r[1],cnt(function(x){return inRange(months(x),r[0])}),false)}).join("");
@@ -85,7 +85,7 @@ document.addEventListener("sa:ready",function(){
     var q=st.q.trim().toLowerCase(),favs=SA.favs();
     var list=SA.courses.filter(function(c){
       if(st.fav&&favs.indexOf(c.id)<0)return false;
-      if(st.cats.length&&st.cats.indexOf(c.cat)<0)return false;
+      if(st.cats.length&&!st.cats.some(function(id){return SA.inCat(c,id)}))return false;
       if(st.formats.length&&st.formats.indexOf(c.format)<0)return false;
       if(st.dur&&!inRange(months(c),st.dur))return false;
       if(st.price&&!inRange(c.price,st.price))return false;
