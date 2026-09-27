@@ -1,11 +1,11 @@
 /* Course catalog synced from smartacademy.ge (courses, lecturers, reviews, images) */
 window.SA = window.SA || {};
 SA.categories = [
-  {id:"ai",name:"AI",sub:"ხელოვნური ინტელექტი და ავტომატიზაცია",color:"#FF6B5B",icon:"spark"},
+  {id:"ai",name:"AI",sub:"ხელოვნური ინტელექტი და ავტომატიზაცია",color:"#E0457B",icon:"spark"},
   {id:"it",name:"IT & Development",sub:"პროგრამირება, QA და მონაცემები",color:"#4A78F0",icon:"code"},
   {id:"design",name:"დიზაინი",sub:"UX/UI, გრაფიკა, 3D და ვიდეო",color:"#8B6CEF",icon:"pen"},
   {id:"management",name:"მენეჯმენტი",sub:"პროექტები, ფინანსები და ბიზნესი",color:"#3DBE6C",icon:"chart"},
-  {id:"hr",name:"HR",sub:"ადამიანური რესურსები და კულტურა",color:"#E0457B",icon:"users"},
+  {id:"hr",name:"HR",sub:"ადამიანური რესურსები და კულტურა",color:"#FF6B5B",icon:"users"},
   {id:"personal",name:"პიროვნული განვითარება",sub:"ლიდერობა, კომუნიკაცია, უნარები",color:"#8DB33A",icon:"sprout"},
   {id:"marketing",name:"მარკეტინგი",sub:"SMM, ციფრული მარკეტინგი და PR",color:"#E0A030",icon:"mega"},
   {id:"business",name:"ბიზნესისთვის",sub:"კორპორატიული ტრენინგები გუნდებისთვის",color:"#0592AB",icon:"brief"}
