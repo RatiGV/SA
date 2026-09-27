@@ -234,7 +234,7 @@ p{margin:0}
 
 /* Category tiles */
 .cats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.cat{position:relative;display:flex;flex-direction:column;gap:12px;min-height:175px;padding:16px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid color-mix(in srgb,var(--c) 38%,var(--line));transition:transform .25s,box-shadow .3s,border-color .25s}
+.cat{position:relative;display:flex;flex-direction:column;gap:12px;min-height:170px;padding:16px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid color-mix(in srgb,var(--c) 38%,var(--line));transition:transform .25s,box-shadow .3s,border-color .25s}
 .cat:hover{transform:translateY(-4px);border-color:var(--c);box-shadow:0 14px 34px -10px color-mix(in srgb,var(--c) 45%,transparent)}
 .cat-head{display:flex;justify-content:space-between;align-items:flex-start}
 .cat .ic{width:38px;height:38px;border-radius:15px;display:grid;place-items:center;transition:transform .25s}
