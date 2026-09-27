@@ -110,15 +110,22 @@ p{margin:0}
 .logo img{height:34px;width:auto;max-width:none}
 .nav{display:flex;align-items:center;gap:4px;margin-right:auto}
 .nav>a,.nav>.has-mega>button{display:flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;font-size:15px;font-weight:500;color:var(--fg-2);transition:background .2s,color .2s;white-space:nowrap}
-.nav>a:hover,.nav>.has-mega>button:hover,.nav>a.active{color:var(--fg);background:var(--bg-soft)}
+.nav>a:hover,.nav>.has-mega>button:hover,.nav>a.active,.nav>.has-mega>button.active{color:var(--fg);background:var(--bg-soft)}
 .nav svg{width:14px;height:14px;transition:transform .2s}
 .has-mega{position:relative}
 .has-mega:hover>button svg,.has-mega:focus-within>button svg{transform:rotate(180deg)}
-.mega{position:absolute;top:calc(100% + 12px);left:-120px;width:740px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:14px;display:grid;grid-template-columns:1.3fr 1fr;gap:14px;opacity:0;visibility:hidden;transform:translateY(8px);transition:.2s}
+.mega{position:absolute;top:calc(100% + 12px);left:-40px;width:900px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:14px;display:grid;grid-template-columns:1.6fr 1fr;gap:14px;opacity:0;visibility:hidden;transform:translateY(8px);transition:.2s}
 .mega::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px}
 .has-mega:hover .mega,.has-mega:focus-within .mega{opacity:1;visibility:visible;transform:none}
+.mega-col{display:flex;flex-direction:column;gap:8px}
 .mega-list{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-content:start}
-.mega-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;transition:background .15s}
+.mega-all{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding:12px 14px;border-radius:14px;background:var(--bg-soft);font-size:14px;font-weight:600;transition:background .15s,color .15s}
+.mega-all small{margin-left:6px;font-size:12px;font-weight:700;color:var(--muted)}
+.mega-all svg{width:16px;height:16px;transition:transform .2s}
+.mega-all:hover{background:var(--inv-bg);color:var(--inv-fg)}
+.mega-all:hover small{color:inherit;opacity:.7}
+.mega-all:hover svg{transform:translateX(3px)}
+.mega-item{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;transition:background .15s}
 .mega-item:hover{background:var(--bg-soft)}
 .ic-tint{background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
 .mega-item .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
@@ -132,7 +139,7 @@ p{margin:0}
 .mega-feature h4{font-size:17px}
 .mega-feature a.btn{margin-top:8px;align-self:flex-start}
 .header-actions{display:flex;align-items:center;gap:10px}
-.header-actions .profile{display:none}
+.header-actions .profile,.header-actions .lang{display:none}
 .icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);position:relative;transition:border-color .2s,background .2s;color:var(--fg);background:var(--surface)}
 .icon-btn:hover{border-color:var(--fg)}
 .icon-btn svg{width:19px;height:19px}
@@ -355,7 +362,7 @@ p{margin:0}
 .lect{border-radius:var(--radius-lg);overflow:hidden;background:var(--surface);border:1px solid var(--line);transition:.25s;display:flex;flex-direction:column}
 .lect:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
 .lect .ph{aspect-ratio:1/.74;overflow:hidden;background:#E6E6E6}
-.lect .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 0;transform:scale(1.1);transform-origin:50% 0;transition:transform .6s}
+.lect .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 0;transform:scale(1.1);transform-origin:50% 1em;transition:transform .6s}
 .lect:hover .ph img{transform:scale(1.15)}
 .lect-body{padding:18px 20px 20px}
 .lect-body b{font-size:17px;display:block}
@@ -523,7 +530,8 @@ p{margin:0}
 .toast svg{width:18px;height:18px;color:var(--brand)}
 
 /* Responsive */
-@media (max-width:1480px){.nav>a.opt{display:none}.header .container{gap:18px}}
+@media (max-width:1480px){.header .container{gap:18px}}
+@media (max-width:1180px){.nav,.header-actions .btn{display:none}.burger{display:grid}.header .container{justify-content:space-between}}
 @media (max-width:1180px){
   .nav>a,.nav>.has-mega>button{padding:10px;font-size:14px}
   .cats{grid-template-columns:repeat(2,1fr)}
